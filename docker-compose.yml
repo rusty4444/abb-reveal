@@ -1,0 +1,28 @@
+services:
+  abb-reveal:
+    image: python:3.13-alpine
+    container_name: abb-reveal
+    restart: unless-stopped
+    user: "65534:65534"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      HOME: /tmp
+      UPSTREAM: https://audiobookbay.lu
+      PORT: "8080"
+    command: ["python", "-u", "/app/reveal.py"]
+    volumes:
+      - ./reveal.py:/app/reveal.py:ro
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    networks:
+      - reveal
+
+networks:
+  reveal:
+    name: abb-reveal
